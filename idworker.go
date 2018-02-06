@@ -25,7 +25,7 @@ type IdWorker struct {
 	idLock                *sync.Mutex
 }
 
-func (this *IdWorker) CreateIdWorker(workerId, datacenterId int64) error {
+func (this *IdWorker) InitIdWorker(workerId, datacenterId int64) error {
 
 	var baseValue int64 = -1
 	this.startTime = 1463834116272
