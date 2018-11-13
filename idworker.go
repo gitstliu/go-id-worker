@@ -80,7 +80,7 @@ func (this *IdWorker) NextId() (int64, error) {
 func (this *IdWorker) tilNextMillis() int64 {
 	timestamp := time.Now().UnixNano()
 	if timestamp <= this.lastTimestamp {
-		timestamp = time.Now().UnixNano()
+		timestamp = time.Now().UnixNano() / 1e6
 	}
 	return timestamp
 }
