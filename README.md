@@ -20,7 +20,8 @@ import (
 ```
 currWoker := &idworker.IdWorker{} 
 currWoker.InitIdWorker(1000, 1)
-newId := currWoker.NexiId()
+newId , newIdErr:= currWoker.NexiId()
+......
 ```
 
 
