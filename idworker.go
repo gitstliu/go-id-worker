@@ -22,6 +22,7 @@ type IdWorker struct {
 	datacenterId          int64
 	sequence              int64
 	lastTimestamp         int64
+	signMask              int64
 	idLock                *sync.Mutex
 }
 
@@ -40,6 +41,8 @@ func (this *IdWorker) InitIdWorker(workerId, datacenterId int64) error {
 	this.sequenceMask = baseValue ^ (baseValue << this.sequenceBits)
 	this.sequence = 0
 	this.lastTimestamp = -1
+	this.signMask = ^baseValue + 1
+
 	this.idLock = &sync.Mutex{}
 
 	if this.workerId < 0 || this.workerId > this.maxWorkerId {
@@ -74,13 +77,22 @@ func (this *IdWorker) NextId() (int64, error) {
 
 	this.idLock.Unlock()
 
-	return ((timestamp - this.startTime) << this.timestampLeftShift) | (this.datacenterId << this.datacenterIdLeftShift) | (this.workerId << this.workerIdLeftShift) | this.sequence, nil
+	id := ((timestamp - this.startTime) << this.timestampLeftShift) |
+		(this.datacenterId << this.datacenterIdLeftShift) |
+		(this.workerId << this.workerIdLeftShift) |
+		this.sequence
+
+	if id < 0 {
+		id = -id
+	}
+
+	return id, nil
 }
 
 func (this *IdWorker) tilNextMillis() int64 {
 	timestamp := time.Now().UnixNano()
 	if timestamp <= this.lastTimestamp {
-		timestamp = time.Now().UnixNano() / 1e6
+		timestamp = time.Now().UnixNano() / int64(time.Millisecond)
 	}
 	return timestamp
 }
