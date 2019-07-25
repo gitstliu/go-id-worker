@@ -2,6 +2,8 @@
 
 IdWorker in golang.
 
+[HTTP Interface](https://github.com/gitstliu/idservice)
+
 go-id-worker is an id creator, for generating a global unique id. The type of id is int64.
 
 ## You can get it like this.
